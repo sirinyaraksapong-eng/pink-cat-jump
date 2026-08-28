@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pink Cat Rooftop Jump</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Canvas Element -->
+        <canvas id="gameCanvas" width="960" height="540"></canvas>
+
+        <!-- HUD Overlay -->
+        <div id="hud" class="overlay hidden">
+            <div class="hud-item score-box">
+                <span class="hud-label">SCORE</span>
+                <span id="scoreVal" class="hud-value">0</span>
+            </div>
+            <div class="hud-item fish-box">
+                <span class="hud-icon">🐟</span>
+                <span id="fishVal" class="hud-value">0</span>
+            </div>
+            <div class="hud-item multiplier-box" id="powerupIndicator">
+                <span id="powerupText">CATNIP BOOST!</span>
+            </div>
+            <button id="pauseBtn" class="icon-btn" aria-label="Pause Game">⏸️</button>
+        </div>
+
+        <!-- Main Menu Modal -->
+        <div id="startScreen" class="overlay modal active">
+            <div class="modal-card">
+                <h1 class="game-title">PINK CAT JUMP 🐾</h1>
+                <p class="subtitle">Leap across colorful rooftops, collect fish treats, and avoid the gaps!</p>
+                
+                <div class="cat-preview">
+                    <div class="preview-badge">✨ Double Jump Ready</div>
+                </div>
+
+                <div class="controls-guide">
+                    <div class="control-item">
+                        <kbd>Space</kbd> / <kbd>▲</kbd> / <kbd>Tap Screen</kbd>
+                        <span>Jump / Double Jump</span>
+                    </div>
+                </div>
+
+                <div class="best-score-badge">
+                    🏆 High Score: <span id="startHighScore">0</span>
+                </div>
+
+                <div class="btn-group">
+                    <button id="startBtn" class="btn btn-primary">START GAME 🚀</button>
+                    <button id="soundToggleBtn" class="btn btn-secondary">🔊 Sound: ON</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pause Screen -->
+        <div id="pauseScreen" class="overlay modal hidden">
+            <div class="modal-card">
+                <h2>GAME PAUSED ⏸️</h2>
+                <div class="btn-group">
+                    <button id="resumeBtn" class="btn btn-primary">RESUME ▶️</button>
+                    <button id="restartPauseBtn" class="btn btn-secondary">RESTART 🔄</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="overlay modal hidden">
+            <div class="modal-card game-over-card">
+                <h2 class="game-over-title">OH NO! 😿</h2>
+                <p>Pinky fell off the rooftop!</p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">Final Score</span>
+                        <span id="finalScore" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Fish Collected</span>
+                        <span id="finalFish" class="stat-value">0 🐟</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Best Score</span>
+                        <span id="finalHighScore" class="stat-value">0</span>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="restartBtn" class="btn btn-primary">PLAY AGAIN 🎮</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
