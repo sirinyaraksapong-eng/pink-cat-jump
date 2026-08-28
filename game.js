@@ -200,13 +200,17 @@ class Game {
     bindEvents() {
         // Keyboard controls
         window.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
-                e.preventDefault();
+            if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW' || e.code === 'Enter' || e.code === 'KeyR') {
                 if (this.state === 'PLAYING') {
-                    this.cat.jump();
+                    if (e.code !== 'Enter' && e.code !== 'KeyR') {
+                        e.preventDefault();
+                        this.cat.jump();
+                    }
                 } else if (this.state === 'START') {
+                    e.preventDefault();
                     this.startGame();
                 } else if (this.state === 'GAMEOVER') {
+                    e.preventDefault();
                     this.restartGame();
                 }
             } else if (e.code === 'KeyP' || e.code === 'Escape') {
@@ -218,7 +222,7 @@ class Game {
             }
         });
 
-        // Pointer/Touch controls
+        // Pointer/Touch controls on Canvas
         this.canvas.addEventListener('pointerdown', (e) => {
             e.preventDefault();
             if (this.state === 'PLAYING') {
@@ -226,15 +230,46 @@ class Game {
             }
         });
 
+        // Allow clicking/tapping anywhere on Game Over Screen or Start Screen to begin/replay
+        this.gameOverScreen.addEventListener('click', (e) => {
+            if (this.state === 'GAMEOVER') {
+                this.restartGame();
+            }
+        });
+
+        this.startScreen.addEventListener('click', (e) => {
+            // Prevent triggering if sound toggle button was clicked
+            if (e.target.id === 'soundToggleBtn') return;
+            if (this.state === 'START') {
+                this.startGame();
+            }
+        });
+
         // UI Button Handlers
-        document.getElementById('startBtn').addEventListener('click', () => this.startGame());
-        document.getElementById('pauseBtn').addEventListener('click', () => this.pauseGame());
-        document.getElementById('resumeBtn').addEventListener('click', () => this.resumeGame());
-        document.getElementById('restartPauseBtn').addEventListener('click', () => this.restartGame());
-        document.getElementById('restartBtn').addEventListener('click', () => this.restartGame());
+        document.getElementById('startBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.startGame();
+        });
+        document.getElementById('pauseBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.pauseGame();
+        });
+        document.getElementById('resumeBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.resumeGame();
+        });
+        document.getElementById('restartPauseBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.restartGame();
+        });
+        document.getElementById('restartBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.restartGame();
+        });
 
         const soundBtn = document.getElementById('soundToggleBtn');
-        soundBtn.addEventListener('click', () => {
+        soundBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             sounds.enabled = !sounds.enabled;
             soundBtn.textContent = sounds.enabled ? '🔊 Sound: ON' : '🔇 Sound: OFF';
         });
@@ -250,11 +285,16 @@ class Game {
         this.catnipTimer = 0;
         this.particles = [];
         this.collectibles = [];
+        if (this.powerupIndEl) {
+            this.powerupIndEl.classList.remove('active');
+        }
 
-        // UI switch
+        // UI switch - cleanly hide all modal overlays
         this.startScreen.classList.remove('active');
         this.startScreen.classList.add('hidden');
+        this.pauseScreen.classList.remove('active');
         this.pauseScreen.classList.add('hidden');
+        this.gameOverScreen.classList.remove('active');
         this.gameOverScreen.classList.add('hidden');
         this.hud.classList.remove('hidden');
 
