@@ -26,7 +26,7 @@ A vibrant, fast-paced infinite runner game built with pure **HTML5 Canvas**, **C
 | Action | Keyboard | Touch / Mouse |
 | :--- | :--- | :--- |
 | **Jump / Double Jump** | <kbd>Space</kbd> / <kbd>▲ Up Arrow</kbd> / <kbd>W</kbd> | Click / Tap Screen |
-| **Pause / Resume** | <kbd>P</kbd> / <kbd>Esc</kbd> | Pause Button ⏸️ |
+| **Pause / Resume** | <kbd>X</kbd> / <kbd>P</kbd> / <kbd>Esc</kbd> | Pause Button ⏸️ |
 
 ---
 

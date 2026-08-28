@@ -282,7 +282,7 @@ class Game {
                     e.preventDefault();
                     this.restartGame();
                 }
-            } else if (e.code === 'KeyP' || e.code === 'Escape') {
+            } else if (e.code === 'KeyP' || e.code === 'Escape' || e.code === 'KeyX') {
                 if (this.state === 'PLAYING') {
                     this.pauseGame();
                 } else if (this.state === 'PAUSED') {
