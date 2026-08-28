@@ -9,6 +9,8 @@ class SoundManager {
     constructor() {
         this.ctx = null;
         this.enabled = true;
+        this.bgmTimer = null;
+        this.bgmStep = 0;
         this.initOnInteraction();
     }
 
@@ -32,6 +34,73 @@ class SoundManager {
         window.addEventListener('keydown', unlock);
         window.addEventListener('touchstart', unlock);
         window.addEventListener('click', unlock);
+    }
+
+    startBGM() {
+        if (this.bgmTimer || !this.enabled) return;
+        this.init();
+
+        // Cute bouncy melody notes (C Major / A Minor Pentatonic)
+        const melody = [
+            523.25, 659.25, 783.99, 659.25,  880.00, 783.99, 659.25, 587.33,
+            523.25, 587.33, 659.25, 783.99, 1046.50, 880.00, 783.99, 659.25,
+            659.25, 783.99, 880.00, 1046.50, 880.00, 783.99, 659.25, 587.33,
+            523.25, 659.25, 587.33, 523.25,  587.33, 659.25, 523.25, 0
+        ];
+        
+        const bassline = [
+            130.81, 0, 130.81, 0,  174.61, 0, 174.61, 0,
+            220.00, 0, 220.00, 0,  196.00, 0, 196.00, 0,
+            130.81, 0, 130.81, 0,  174.61, 0, 174.61, 0,
+            220.00, 0, 196.00, 0,  130.81, 0, 130.81, 0
+        ];
+
+        this.bgmStep = 0;
+        this.bgmTimer = setInterval(() => {
+            if (!this.enabled || !this.ctx) return;
+            if (this.ctx.state === 'suspended') this.ctx.resume();
+
+            const now = this.ctx.currentTime;
+
+            // Play Melody Note (Cute soft triangle tone)
+            const noteFreq = melody[this.bgmStep % melody.length];
+            if (noteFreq > 0) {
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(noteFreq, now);
+                gain.gain.setValueAtTime(0.06, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.16);
+            }
+
+            // Play Bass Note (Soft rounded pulse)
+            const bassFreq = bassline[this.bgmStep % bassline.length];
+            if (bassFreq > 0) {
+                const bOsc = this.ctx.createOscillator();
+                const bGain = this.ctx.createGain();
+                bOsc.type = 'sine';
+                bOsc.frequency.setValueAtTime(bassFreq, now);
+                bGain.gain.setValueAtTime(0.07, now);
+                bGain.gain.exponentialRampToValueAtTime(0.001, now + 0.20);
+                bOsc.connect(bGain);
+                bGain.connect(this.ctx.destination);
+                bOsc.start(now);
+                bOsc.stop(now + 0.20);
+            }
+
+            this.bgmStep++;
+        }, 180);
+    }
+
+    stopBGM() {
+        if (this.bgmTimer) {
+            clearInterval(this.bgmTimer);
+            this.bgmTimer = null;
+        }
     }
 
     playJump() {
@@ -271,6 +340,11 @@ class Game {
         soundBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             sounds.enabled = !sounds.enabled;
+            if (!sounds.enabled) {
+                sounds.stopBGM();
+            } else if (this.state === 'PLAYING') {
+                sounds.startBGM();
+            }
             soundBtn.textContent = sounds.enabled ? '🔊 Sound: ON' : '🔇 Sound: OFF';
         });
     }
@@ -320,6 +394,7 @@ class Game {
         this.cat.isGrounded = true;
 
         sounds.init();
+        sounds.startBGM();
     }
 
     spawnBuilding(startX) {
@@ -362,6 +437,7 @@ class Game {
     pauseGame() {
         if (this.state !== 'PLAYING') return;
         this.state = 'PAUSED';
+        sounds.stopBGM();
         this.pauseScreen.classList.remove('hidden');
         this.pauseScreen.classList.add('active');
     }
@@ -369,12 +445,14 @@ class Game {
     resumeGame() {
         if (this.state !== 'PAUSED') return;
         this.state = 'PLAYING';
+        sounds.startBGM();
         this.pauseScreen.classList.remove('active');
         this.pauseScreen.classList.add('hidden');
     }
 
     triggerGameOver() {
         this.state = 'GAMEOVER';
+        sounds.stopBGM();
         sounds.playGameOver();
 
         if (this.score > this.highScore) {
