@@ -373,7 +373,7 @@ class Game {
         this.hud.classList.remove('hidden');
 
         // Init Cat
-        this.cat = new Cat(120, 200);
+        this.cat = new Cat(120, 200, this);
 
         // Generate initial starting building layout
         this.buildings = [];
@@ -564,7 +564,22 @@ class Game {
         this.scoreValEl.textContent = Math.floor(this.score);
         this.fishValEl.textContent = this.fishCount;
 
-        // Particle trail from cat running/jumping
+        // Rainbow trail particles behind cat while airborne/jumping
+        if (!this.cat.isGrounded) {
+            const rainbowColors = ['#FF2D55', '#FF9500', '#FFCC00', '#4CD964', '#5AC8FA', '#5856D6', '#AF52DE'];
+            const color = rainbowColors[Math.floor(Math.random() * rainbowColors.length)];
+            this.particles.push(new Particle(
+                this.cat.x + Math.random() * 20,
+                this.cat.y + Math.random() * 20 + 8,
+                -effectiveSpeed * 0.4 + (Math.random() - 0.5) * 2,
+                (Math.random() - 0.5) * 2,
+                color,
+                Math.random() * 5 + 3,
+                25
+            ));
+        }
+
+        // Particle trail from cat running
         if (this.cat.isGrounded && Math.random() < 0.4) {
             this.particles.push(new Particle(
                 this.cat.x + 5,
@@ -591,6 +606,24 @@ class Game {
             s.x -= s.speed * (effectiveSpeed / 6);
             if (s.x < 0) s.x = this.width;
         });
+    }
+
+    spawnRainbowBurst(x, y, isDoubleJump = false) {
+        const count = isDoubleJump ? 24 : 14;
+        const rainbowColors = ['#FF2D55', '#FF9500', '#FFCC00', '#4CD964', '#5AC8FA', '#5856D6', '#AF52DE'];
+        for (let i = 0; i < count; i++) {
+            const angle = (i / count) * Math.PI * 2;
+            const speed = isDoubleJump ? Math.random() * 6 + 4 : Math.random() * 4 + 3;
+            const color = rainbowColors[i % rainbowColors.length];
+            this.particles.push(new Particle(
+                x, y,
+                Math.cos(angle) * speed,
+                Math.sin(angle) * speed,
+                color,
+                Math.random() * 5 + 3,
+                30
+            ));
+        }
     }
 
     spawnBurstParticles(x, y, color, count) {
@@ -672,9 +705,10 @@ class Game {
 
 // Cat Character Class
 class Cat {
-    constructor(x, y) {
+    constructor(x, y, game = null) {
         this.x = x;
         this.y = y;
+        this.game = game;
         this.width = 44;
         this.height = 36;
         this.vy = 0;
@@ -692,6 +726,9 @@ class Cat {
             this.vy = this.jumpForce;
             this.isGrounded = false;
             this.jumpCount++;
+            if (this.game) {
+                this.game.spawnRainbowBurst(this.x + 22, this.y + 18, this.jumpCount === 2);
+            }
             if (this.jumpCount === 1) {
                 sounds.playJump();
             } else {
@@ -741,6 +778,24 @@ class Cat {
     draw(ctx, isCatnipActive) {
         ctx.save();
         ctx.translate(this.x, this.y);
+
+        // Vibrant 7-Color Rainbow Ring / Halo around Cat when Jumping
+        if (!this.isGrounded) {
+            const rainbowColors = ['#FF2D55', '#FF9500', '#FFCC00', '#4CD964', '#5AC8FA', '#5856D6', '#AF52DE'];
+            const baseRadius = 24;
+            ctx.save();
+            ctx.lineWidth = 2.5;
+            ctx.globalAlpha = 0.85;
+            rainbowColors.forEach((color, i) => {
+                ctx.strokeStyle = color;
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 6;
+                ctx.beginPath();
+                ctx.arc(22, 18, baseRadius + (i * 2.2), 0, Math.PI * 2);
+                ctx.stroke();
+            });
+            ctx.restore();
+        }
 
         // Catnip Aura effect
         if (isCatnipActive) {
