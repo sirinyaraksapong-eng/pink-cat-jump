@@ -357,6 +357,7 @@ class Game {
         this.distance = 0;
         this.catnipActive = false;
         this.catnipTimer = 0;
+        this.giantUnlocked = false;
         this.particles = [];
         this.collectibles = [];
         if (this.powerupIndEl) {
@@ -492,7 +493,14 @@ class Game {
         const effectiveSpeed = this.catnipActive ? this.gameSpeed * 1.35 : this.gameSpeed;
 
         // Update Cat
-        this.cat.update(this.buildings, effectiveSpeed);
+        this.cat.update(this.buildings, effectiveSpeed, this.score);
+
+        // Giant Cat Mode Unlock at 20000 Score
+        if (this.score >= 20000 && !this.giantUnlocked) {
+            this.giantUnlocked = true;
+            sounds.playCatnipPower();
+            this.spawnRainbowBurst(this.cat.x + 22, this.cat.y + 18, true);
+        }
 
         // Check if cat fell below canvas
         if (this.cat.y > this.height + 50) {
@@ -682,7 +690,20 @@ class Game {
 
         // Draw Cat
         if (this.cat) {
-            this.cat.draw(this.ctx, this.catnipActive);
+            const isGiant = this.score >= 20000;
+            this.cat.draw(this.ctx, this.catnipActive, isGiant);
+        }
+
+        // Golden Giant Cat Mode Banner
+        if (this.score >= 20000) {
+            this.ctx.save();
+            this.ctx.fillStyle = '#FFD700';
+            this.ctx.shadowColor = '#FF80AB';
+            this.ctx.shadowBlur = 14;
+            this.ctx.font = '700 22px Fredoka, cursive, sans-serif';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText('👑 GIANT CAT MODE 👑', this.width / 2, 42);
+            this.ctx.restore();
         }
     }
 
@@ -735,7 +756,12 @@ class Cat {
         }
     }
 
-    update(buildings, speed) {
+    update(buildings, speed, score = 0) {
+        const isGiant = score >= 20000;
+        const scale = isGiant ? 1.65 : 1.0;
+        this.width = 44 * scale;
+        this.height = 36 * scale;
+
         // Apply Gravity
         this.vy += this.gravity;
         this.y += this.vy;
@@ -773,14 +799,22 @@ class Cat {
         );
     }
 
-    draw(ctx, isCatnipActive) {
+    draw(ctx, isCatnipActive, isGiant = false) {
         ctx.save();
         ctx.translate(this.x, this.y);
+
+        if (isGiant) {
+            ctx.translate(22, 18);
+            ctx.scale(1.65, 1.65);
+            ctx.translate(-22, -18);
+            ctx.shadowColor = '#FFD700';
+            ctx.shadowBlur = 22;
+        }
 
         // Vibrant 7-Color Rainbow Ring / Halo around Cat when Jumping
         if (!this.isGrounded) {
             const rainbowColors = ['#FF2D55', '#FF9500', '#FFCC00', '#4CD964', '#5AC8FA', '#5856D6', '#AF52DE'];
-            const baseRadius = 24;
+            const baseRadius = 26;
             ctx.save();
             ctx.lineWidth = 2.5;
             ctx.globalAlpha = 0.85;
