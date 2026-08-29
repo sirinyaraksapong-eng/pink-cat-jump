@@ -716,24 +716,22 @@ class Cat {
         this.jumpForce = -13.5;
         this.isGrounded = false;
         this.jumpCount = 0;
-        this.maxJumps = 2; // Single & Double Jump
+        this.maxJumps = Infinity; // Infinite Jump Mode!
         this.animFrame = 0;
         this.groundY = 0;
     }
 
     jump() {
-        if (this.jumpCount < this.maxJumps) {
-            this.vy = this.jumpForce;
-            this.isGrounded = false;
-            this.jumpCount++;
-            if (this.game) {
-                this.game.spawnRainbowBurst(this.x + 22, this.y + 18, this.jumpCount === 2);
-            }
-            if (this.jumpCount === 1) {
-                sounds.playJump();
-            } else {
-                sounds.playDoubleJump();
-            }
+        this.vy = this.jumpForce;
+        this.isGrounded = false;
+        this.jumpCount++;
+        if (this.game) {
+            this.game.spawnRainbowBurst(this.x + 22, this.y + 18, this.jumpCount > 1);
+        }
+        if (this.jumpCount === 1) {
+            sounds.playJump();
+        } else {
+            sounds.playDoubleJump();
         }
     }
 
