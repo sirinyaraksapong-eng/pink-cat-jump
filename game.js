@@ -803,83 +803,117 @@ class Cat {
             ctx.shadowBlur = 18;
         }
 
-        // Draw Cute Bouncy Pink Slim (Slime)
-        const bounce = Math.sin(this.animFrame * 1.2);
-        
-        let scaleX = 1.0;
-        let scaleY = 1.0;
+        const runCycle = Math.sin(this.animFrame);
 
-        if (!this.isGrounded) {
-            // Airborne Stretch Pose
-            scaleX = 0.82;
-            scaleY = 1.25;
-        } else {
-            // Ground Bouncy Jiggle Pose
-            scaleX = 1.0 + bounce * 0.12;
-            scaleY = 1.0 - bounce * 0.10;
-        }
-
-        ctx.save();
-        ctx.translate(22, 22);
-        ctx.scale(scaleX, scaleY);
-
-        // Slime Main Jelly Body (Gradient Glossy Pink Blob)
-        const slimeGrad = ctx.createLinearGradient(0, -18, 0, 14);
-        slimeGrad.addColorStop(0, '#FF80AB');
-        slimeGrad.addColorStop(0.5, '#FF4081');
-        slimeGrad.addColorStop(1, '#F50057');
-
-        ctx.fillStyle = slimeGrad;
+        // Slender Thin Cat Body (Sleek Pink Silhouette)
+        ctx.fillStyle = '#FF80AB';
         ctx.beginPath();
-        // Smooth squishy blob shape
-        ctx.moveTo(-18, 12);
-        ctx.bezierCurveTo(-22, -4, -14, -18, 0, -20);
-        ctx.bezierCurveTo(14, -18, 22, -4, 18, 12);
-        ctx.bezierCurveTo(12, 18, -12, 18, -18, 12);
+        ctx.ellipse(20, 22, 15, 9, -0.1, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Soft Belly Accent
+        ctx.fillStyle = '#FFE5EC';
+        ctx.beginPath();
+        ctx.ellipse(21, 23, 9, 5, -0.1, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Slender Cat Head
+        ctx.fillStyle = '#FF80AB';
+        ctx.beginPath();
+        ctx.arc(31, 13, 10, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Pointy Pink Ears
+        // Left Ear
+        ctx.fillStyle = '#FF4081';
+        ctx.beginPath();
+        ctx.moveTo(23, 6); ctx.lineTo(27, -4); ctx.lineTo(31, 4); ctx.fill();
+        // Right Ear
+        ctx.beginPath();
+        ctx.moveTo(32, 4); ctx.lineTo(37, -5); ctx.lineTo(41, 6); ctx.fill();
+
+        // Inner Ears
+        ctx.fillStyle = '#FFE5EC';
+        ctx.beginPath();
+        ctx.moveTo(25, 5); ctx.lineTo(27, 0); ctx.lineTo(29, 4); ctx.fill();
+
+        // 🎩 STYLISH CUTE HAT (Purple Top Hat with Golden Star Band)
+        // Hat Base/Brim
+        ctx.fillStyle = '#7B1FA2';
+        ctx.beginPath();
+        ctx.ellipse(32, 3, 11, 3.5, -0.15, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Hat Crown / Cone
+        ctx.fillStyle = '#9C27B0';
+        ctx.beginPath();
+        ctx.moveTo(25, 2);
+        ctx.lineTo(27, -13);
+        ctx.lineTo(36, -15);
+        ctx.lineTo(38, 1);
         ctx.closePath();
         ctx.fill();
 
-        // Shiny Jelly Highlight on top
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+        // Hat Golden Ribbon Band
+        ctx.fillStyle = '#FFD700';
+        ctx.fillRect(25, 0, 13, 2.5);
+
+        // Tiny Gold Star Badge on Hat
+        ctx.fillStyle = '#FFF59D';
         ctx.beginPath();
-        ctx.ellipse(-6, -10, 7, 4, -0.4, 0, Math.PI * 2);
+        ctx.arc(31, 1, 1.8, 0, Math.PI * 2);
         ctx.fill();
 
-        // Cute Cat Ear Nubs on Slime Top
-        ctx.fillStyle = '#FF80AB';
-        // Left Nub
-        ctx.beginPath();
-        ctx.moveTo(-12, -14); ctx.lineTo(-7, -22); ctx.lineTo(-2, -16); ctx.fill();
-        // Right Nub
-        ctx.beginPath();
-        ctx.moveTo(2, -16); ctx.lineTo(7, -22); ctx.lineTo(12, -14); ctx.fill();
-
-        // Cute Big Sparkle Eyes
+        // Cute Eyes (Big Sparkle Slender Eyes)
         ctx.fillStyle = '#1A001F';
-        // Left Eye
-        ctx.beginPath(); ctx.arc(-7, -2, 3.2, 0, Math.PI * 2); ctx.fill();
-        // Right Eye
-        ctx.beginPath(); ctx.arc(7, -2, 3.2, 0, Math.PI * 2); ctx.fill();
-
-        // Eye Shininess (Sparkles)
-        ctx.fillStyle = '#FFFFFF';
-        ctx.beginPath(); ctx.arc(-6, -3.5, 1.3, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(8, -3.5, 1.3, 0, Math.PI * 2); ctx.fill();
-
-        // Cute Rosy Blushing Cheeks
-        ctx.fillStyle = 'rgba(255, 100, 160, 0.6)';
-        ctx.beginPath(); ctx.ellipse(-11, 4, 3.5, 2, 0, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.ellipse(11, 4, 3.5, 2, 0, 0, Math.PI * 2); ctx.fill();
-
-        // Cute Mouth
-        ctx.strokeStyle = '#880E4F';
-        ctx.lineWidth = 1.8;
-        ctx.lineCap = 'round';
         ctx.beginPath();
-        ctx.arc(0, 3, 2.5, 0, Math.PI);
+        ctx.arc(35, 11, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+        // Eye Shine
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(36, 10, 0.9, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Cute Pink Nose
+        ctx.fillStyle = '#F50057';
+        ctx.beginPath();
+        ctx.arc(40, 13, 1.3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Fine Whiskers
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.lineWidth = 1.0;
+        ctx.beginPath();
+        ctx.moveTo(39, 14); ctx.lineTo(46, 12);
+        ctx.moveTo(39, 15); ctx.lineTo(45, 17);
         ctx.stroke();
 
-        ctx.restore();
+        // Slender Graceful Tail
+        const tailAngle = Math.sin(this.animFrame * 0.8) * 0.35;
+        ctx.strokeStyle = '#FF4081';
+        ctx.lineWidth = 3.2;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(6, 20);
+        ctx.quadraticCurveTo(-8 + Math.cos(tailAngle) * 6, 8 + Math.sin(tailAngle) * 10, -10, -2 + Math.sin(tailAngle) * 8);
+        ctx.stroke();
+
+        // Long Slender Legs
+        ctx.fillStyle = '#FF4081';
+        if (this.isGrounded) {
+            // Front slender legs
+            ctx.fillRect(26 + runCycle * 6, 29, 3, 12);
+            ctx.fillRect(32 - runCycle * 6, 29, 3, 12);
+            // Back slender legs
+            ctx.fillRect(8 - runCycle * 6, 29, 3, 12);
+            ctx.fillRect(14 + runCycle * 6, 29, 3, 12);
+        } else {
+            // Graceful jump pose
+            ctx.fillRect(28, 27, 3.5, 9);
+            ctx.fillRect(10, 27, 3.5, 9);
+        }
+
         ctx.restore();
     }
 }
