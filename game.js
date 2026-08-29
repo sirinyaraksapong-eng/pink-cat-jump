@@ -803,99 +803,83 @@ class Cat {
             ctx.shadowBlur = 18;
         }
 
-        const runCycle = Math.sin(this.animFrame);
+        // Draw Cute Bouncy Pink Slim (Slime)
+        const bounce = Math.sin(this.animFrame * 1.2);
+        
+        let scaleX = 1.0;
+        let scaleY = 1.0;
 
-        // Body (Cute Pink Oval)
-        ctx.fillStyle = '#FF91A4';
-        ctx.beginPath();
-        ctx.ellipse(22, 22, 18, 14, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Belly Patch (Softer White/Pink)
-        ctx.fillStyle = '#FFE5EC';
-        ctx.beginPath();
-        ctx.ellipse(24, 25, 10, 8, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Cat Head
-        ctx.fillStyle = '#FF91A4';
-        ctx.beginPath();
-        ctx.arc(32, 14, 12, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Outer Ears
-        ctx.fillStyle = '#FF6584';
-        // Left Ear
-        ctx.beginPath();
-        ctx.moveTo(25, 6);
-        ctx.lineTo(29, -4);
-        ctx.lineTo(34, 4);
-        ctx.fill();
-        // Right Ear
-        ctx.beginPath();
-        ctx.moveTo(33, 4);
-        ctx.lineTo(38, -5);
-        ctx.lineTo(42, 6);
-        ctx.fill();
-
-        // Inner Ears (Pink accent)
-        ctx.fillStyle = '#FFE5EC';
-        ctx.beginPath();
-        ctx.moveTo(27, 5);
-        ctx.lineTo(29, -1);
-        ctx.lineTo(32, 4);
-        ctx.fill();
-
-        // Eyes (Cute dark sparkle eyes)
-        ctx.fillStyle = '#2D132C';
-        ctx.beginPath();
-        ctx.arc(36, 12, 2.5, 0, Math.PI * 2);
-        ctx.fill();
-        // Eye Shine
-        ctx.fillStyle = '#FFFFFF';
-        ctx.beginPath();
-        ctx.arc(37, 11, 1, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Cute Nose
-        ctx.fillStyle = '#FF4081';
-        ctx.beginPath();
-        ctx.arc(41, 14, 1.5, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Whiskers
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-        ctx.lineWidth = 1.2;
-        ctx.beginPath();
-        ctx.moveTo(40, 15); ctx.lineTo(47, 13);
-        ctx.moveTo(40, 16); ctx.lineTo(46, 18);
-        ctx.stroke();
-
-        // Tail (Waving smoothly)
-        const tailAngle = Math.sin(this.animFrame * 0.8) * 0.3;
-        ctx.strokeStyle = '#FF7597';
-        ctx.lineWidth = 4.5;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(6, 20);
-        ctx.quadraticCurveTo(-6 + Math.cos(tailAngle) * 5, 10 + Math.sin(tailAngle) * 8, -8, 2 + Math.sin(tailAngle) * 6);
-        ctx.stroke();
-
-        // Animated Running Legs
-        ctx.fillStyle = '#FF7597';
-        if (this.isGrounded) {
-            // Front legs
-            ctx.fillRect(28 + runCycle * 5, 30, 4, 10);
-            ctx.fillRect(34 - runCycle * 5, 30, 4, 10);
-            // Back legs
-            ctx.fillRect(10 - runCycle * 5, 30, 4, 10);
-            ctx.fillRect(16 + runCycle * 5, 30, 4, 10);
+        if (!this.isGrounded) {
+            // Airborne Stretch Pose
+            scaleX = 0.82;
+            scaleY = 1.25;
         } else {
-            // Air jump tuck pose
-            ctx.fillRect(30, 28, 5, 7);
-            ctx.fillRect(12, 28, 5, 7);
+            // Ground Bouncy Jiggle Pose
+            scaleX = 1.0 + bounce * 0.12;
+            scaleY = 1.0 - bounce * 0.10;
         }
 
+        ctx.save();
+        ctx.translate(22, 22);
+        ctx.scale(scaleX, scaleY);
+
+        // Slime Main Jelly Body (Gradient Glossy Pink Blob)
+        const slimeGrad = ctx.createLinearGradient(0, -18, 0, 14);
+        slimeGrad.addColorStop(0, '#FF80AB');
+        slimeGrad.addColorStop(0.5, '#FF4081');
+        slimeGrad.addColorStop(1, '#F50057');
+
+        ctx.fillStyle = slimeGrad;
+        ctx.beginPath();
+        // Smooth squishy blob shape
+        ctx.moveTo(-18, 12);
+        ctx.bezierCurveTo(-22, -4, -14, -18, 0, -20);
+        ctx.bezierCurveTo(14, -18, 22, -4, 18, 12);
+        ctx.bezierCurveTo(12, 18, -12, 18, -18, 12);
+        ctx.closePath();
+        ctx.fill();
+
+        // Shiny Jelly Highlight on top
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+        ctx.beginPath();
+        ctx.ellipse(-6, -10, 7, 4, -0.4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Cute Cat Ear Nubs on Slime Top
+        ctx.fillStyle = '#FF80AB';
+        // Left Nub
+        ctx.beginPath();
+        ctx.moveTo(-12, -14); ctx.lineTo(-7, -22); ctx.lineTo(-2, -16); ctx.fill();
+        // Right Nub
+        ctx.beginPath();
+        ctx.moveTo(2, -16); ctx.lineTo(7, -22); ctx.lineTo(12, -14); ctx.fill();
+
+        // Cute Big Sparkle Eyes
+        ctx.fillStyle = '#1A001F';
+        // Left Eye
+        ctx.beginPath(); ctx.arc(-7, -2, 3.2, 0, Math.PI * 2); ctx.fill();
+        // Right Eye
+        ctx.beginPath(); ctx.arc(7, -2, 3.2, 0, Math.PI * 2); ctx.fill();
+
+        // Eye Shininess (Sparkles)
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath(); ctx.arc(-6, -3.5, 1.3, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(8, -3.5, 1.3, 0, Math.PI * 2); ctx.fill();
+
+        // Cute Rosy Blushing Cheeks
+        ctx.fillStyle = 'rgba(255, 100, 160, 0.6)';
+        ctx.beginPath(); ctx.ellipse(-11, 4, 3.5, 2, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(11, 4, 3.5, 2, 0, 0, Math.PI * 2); ctx.fill();
+
+        // Cute Mouth
+        ctx.strokeStyle = '#880E4F';
+        ctx.lineWidth = 1.8;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.arc(0, 3, 2.5, 0, Math.PI);
+        ctx.stroke();
+
+        ctx.restore();
         ctx.restore();
     }
 }
